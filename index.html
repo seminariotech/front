@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CodeNews - Dashboard</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar" id="topbar">
+    <h1>CodeNews - Gestão de Atendimento</h1>
+    <nav>
+      <button id="btn-dashboard">Dashboard</button>
+      <button id="btn-pacientes">Pacientes</button>
+      <button id="btn-atendimentos">Atendimentos</button>
+      <button id="btn-usuarios">Usuários</button>
+      <button id="btn-auxiliares">Cadastros Auxiliares</button>
+      <button id="btn-integrantes">Integrantes</button>
+      <button id="btn-logout" class="logout">Sair</button>
+    </nav>
+  </header>
+
+  <main id="app">
+    <!-- LOGIN (abre por padrão) -->
+    <section id="view-login" class="view active">
+      <div class="card auth-card">
+        <h2>Entrar no CodeNews</h2>
+        <form id="loginForm">
+          <label>Email
+            <input id="loginEmail" type="email" required placeholder="ex: admin@example.com" />
+          </label>
+          <label>Senha
+            <input id="loginSenha" type="password" required placeholder="senha" />
+          </label>
+          <div class="row">
+            <button type="submit" class="btn-action">Entrar</button>
+            <button type="button" id="btnShowRegister" class="btn-secondary">Registrar</button>
+          </div>
+        </form>
+
+        <form id="registerForm" class="hidden">
+          <h3>Registrar novo usuário</h3>
+          <label>Nome
+            <input id="regName" required />
+          </label>
+          <label>Email
+            <input id="regEmail" type="email" required />
+          </label>
+          <label>Senha
+            <input id="regPass" type="password" required />
+          </label>
+          <div class="row">
+            <button type="submit" class="btn-action">Criar conta</button>
+            <button type="button" id="btnCancelRegister" class="btn-secondary">Cancelar</button>
+          </div>
+        </form>
+
+        <p class="muted">Usuário inicial: <strong>admin@example.com</strong> / senha: <strong>admin</strong></p>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="view-dashboard" class="view hidden">
+      <div class="dashboard-top">
+        <div class="stats">
+          <div class="card">
+            <h3>Total atendimentos</h3>
+            <p id="totalAtendimentos">0</p>
+          </div>
+          <div class="card">
+            <h3>Paciente em atendimento</h3>
+            <p id="pacienteEmAtendimento">—</p>
+          </div>
+          <div class="card">
+            <h3>Tempo médio de espera</h3>
+            <p id="tempoMedio">—</p>
+          </div>
+        </div>
+
+        <div class="carousel" id="carousel">
+          <div class="carousel-slide" data-index="0">
+            <h4>Resumo - Política de Privacidade</h4>
+            <p>Coletamos apenas dados necessários: nome, CPF, telefone e dados clínicos para triagem. Dados usados para gestão de fila e estatísticas.</p>
+          </div>
+          <div class="carousel-slide" data-index="1">
+            <h4>Resumo - Termos de Uso</h4>
+            <p>Usuários autorizados devem manter sigilo das credenciais. O sistema não substitui diagnóstico médico.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="queue-panel">
+        <h3>Fila de espera</h3>
+        <table id="filaTable">
+          <thead><tr><th>#</th><th>Nome</th><th>Risco</th><th>Tempo espera</th><th>Ações</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PACIENTES -->
+    <section id="view-pacientes" class="view hidden">
+      <h2>Gestão de Pacientes</h2>
+      <form id="pacienteForm" class="card">
+        <input type="hidden" id="pacienteId" />
+        <label>Nome<input id="pacienteNome" required /></label>
+        <label>CPF<input id="pacienteCPF" required /></label>
+        <label>Telefone<input id="pacienteTelefone" /></label>
+        <label>Observações<textarea id="pacienteObs"></textarea></label>
+        <div class="row">
+          <button type="submit" class="btn-action">Salvar</button>
+          <button type="button" id="btnNovoPaciente" class="btn-secondary">Novo</button>
+        </div>
+      </form>
+
+      <div class="card" style="margin-top:12px;">
+        <h3>Filtrar pacientes</h3>
+        <div class="row" style="flex-wrap:wrap;">
+          <input id="filtroPacientesNome" placeholder="Nome" />
+          <input id="filtroPacientesCPF" placeholder="CPF" />
+          <button id="btnFiltrarPacientes" class="btn-action">Filtrar</button>
+          <button id="btnLimparFiltroPacientes" class="btn-secondary">Limpar</button>
+        </div>
+      </div>
+
+      <table id="tabelaPacientes" class="card" style="margin-top:12px;"><thead><tr><th>Nome</th><th>CPF</th><th>Ações</th></tr></thead><tbody></tbody></table>
+    </section>
+
+    <!-- ATENDIMENTOS -->
+    <section id="view-atendimentos" class="view hidden">
+      <h2>Gestão de Atendimentos</h2>
+      <form id="atendimentoForm" class="card">
+        <input type="hidden" id="atId" />
+        <label>Paciente (nome ou CPF)<input id="atPaciente" required /></label>
+
+        <label>Classificação de risco
+          <select id="atRisco"></select>
+        </label>
+
+        <label>Sala
+          <select id="atSala"></select>
+        </label>
+
+        <label>Médico
+          <select id="atMedico"></select>
+        </label>
+
+        <div class="row">
+          <button type="submit" class="btn-action">Salvar Atendimento</button>
+          <button type="button" id="btnNovoAtendimento" class="btn-secondary">Novo</button>
+        </div>
+      </form>
+
+      <div class="card" style="margin-top:12px;">
+        <h3>Filtrar atendimentos</h3>
+        <div class="row" style="flex-wrap:wrap;">
+          <input id="filtroAtPaciente" placeholder="Paciente (nome)" />
+          <input id="filtroAtData" type="date" />
+          <select id="filtroAtRisco"><option value="">Todos os riscos</option></select>
+          <select id="filtroAtMedico"><option value="">Todos os médicos</option></select>
+          <button id="btnFiltrarAt" class="btn-action">Filtrar</button>
+          <button id="btnLimparFiltroAt" class="btn-secondary">Limpar</button>
+        </div>
+      </div>
+
+      <table id="tabelaAtendimentos" class="card" style="margin-top:12px;"><thead><tr><th>Paciente</th><th>Risco</th><th>Sala</th><th>Médico</th><th>Data</th><th>Ações</th></tr></thead><tbody></tbody></table>
+    </section>
+
+    <!-- USUÁRIOS CRUD (acessível após login) -->
+    <section id="view-usuarios" class="view hidden">
+      <h2>Usuários (Admin)</h2>
+      <form id="userForm" class="card">
+        <input type="hidden" id="userId" />
+        <label>Nome<input id="userName" required/></label>
+        <label>Email<input id="userEmail" type="email" required/></label>
+        <label>Senha<input id="userPass" type="password" required/></label>
+        <div class="row">
+          <button type="submit" class="btn-action">Salvar</button>
+        </div>
+      </form>
+      <table id="tabelaUsuarios" class="card" style="margin-top:12px;"><thead><tr><th>Nome</th><th>Email</th><th>Ações</th></tr></thead><tbody></tbody></table>
+    </section>
+
+    <!-- CADASTROS AUXILIARES -->
+    <section id="view-auxiliares" class="view hidden">
+      <h2>Cadastros Auxiliares</h2>
+
+      <div class="card">
+        <h3>Médicos</h3>
+        <form id="formMedico" class="small-form">
+          <input type="hidden" id="medId" />
+          <label>Nome<input id="medNome" /></label>
+          <div class="row"><button type="submit" class="btn-action">Salvar</button><button type="button" id="btnNovoMed" class="btn-secondary">Novo</button></div>
+        </form>
+        <table id="tabelaMedicos"><thead><tr><th>Nome</th><th>Ações</th></tr></thead><tbody></tbody></table>
+      </div>
+
+      <div class="card" style="margin-top:12px;">
+        <h3>Classificação de Risco</h3>
+        <form id="formRisco" class="small-form">
+          <input type="hidden" id="risId" />
+          <label>Nível (1..5)<input id="risNivel" type="number" min="1" max="5" /></label>
+          <label>Descrição<input id="risDesc" /></label>
+          <div class="row"><button type="submit" class="btn-action">Salvar</button><button type="button" id="btnNovoRisco" class="btn-secondary">Novo</button></div>
+        </form>
+        <table id="tabelaRiscos"><thead><tr><th>Nível</th><th>Descrição</th><th>Ações</th></tr></thead><tbody></tbody></table>
+      </div>
+
+      <div class="card" style="margin-top:12px;">
+        <h3>Salas</h3>
+        <form id="formSala" class="small-form">
+          <input type="hidden" id="salId" />
+          <label>Identificação<input id="salNome" /></label>
+          <div class="row"><button type="submit" class="btn-action">Salvar</button><button type="button" id="btnNovoSala" class="btn-secondary">Novo</button></div>
+        </form>
+        <table id="tabelaSalas"><thead><tr><th>Identificação</th><th>Ações</th></tr></thead><tbody></tbody></table>
+      </div>
+    </section>
+
+    <!-- INTEGRANTES -->
+    <section id="view-integrantes" class="view hidden">
+      <h2>Integrantes</h2>
+      <div class="integrantes-grid card">
+        <div class="integrante">
+          <img src="https://via.placeholder.com/120" alt="Foto de Integrante" />
+          <p>Gustavo</p>
+        </div>
+        <div class="integrante">
+          <img src="https://via.placeholder.com/120" alt="Foto de Integrante" />
+          <p>Marlon</p>
+        </div>
+        <div class="integrante">
+          <img src="https://via.placeholder.com/120" alt="Foto de Integrante" />
+          <p>Mayk</p>
+        </div>
+        <div class="integrante">
+          <img src="https://via.placeholder.com/120" alt="Foto de Integrante" />
+          <p>Gabriel</p>
+        </div>
+        <div class="integrante">
+          <img src="https://via.placeholder.com/120" alt="Foto de Integrante" />
+          <p>Joyce</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <small>CodeNews — Protótipo | Dados simulados para demonstração</small>
+  </footer>
+
+<script src="app.js"></script>
+</body>
+</html>

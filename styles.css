@@ -1,0 +1,235 @@
+:root{
+  --bg: #0A2540;
+  --card: #F5F8FA;
+  --text: #0A2540;
+  --accent: #FFB200;
+  --accent-2: #007ACC;
+  --muted: #475569;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Inter,Segoe UI,Roboto,Arial;
+  background:var(--bg);
+  color:var(--card);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+
+/* ======================= TOPBAR ======================= */
+.topbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 20px;
+  background:linear-gradient(90deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));
+  border-bottom:1px solid rgba(255,255,255,0.03);
+}
+.topbar h1{
+  font-size:18px;
+  margin:0;
+  color:#fff;
+}
+.topbar nav button{
+  margin-left:8px;
+  padding:8px 12px;
+  border-radius:8px;
+  border:0;
+  background:transparent;
+  color:#fff;
+  cursor:pointer;
+}
+.topbar nav .logout{
+  background:rgba(255,255,255,0.03);
+  padding:6px 10px;
+  border-radius:8px;
+}
+
+/* ======================= MAIN ======================= */
+main{
+  flex:1;
+  padding:20px;
+}
+.view{display:none;}
+.view.active{display:block;}
+
+/* ======================= CARDS ======================= */
+.card{
+  background:var(--card);
+  color:var(--text);
+  padding:12px;
+  border-radius:10px;
+  min-width:160px;
+}
+
+/* LOGIN */
+.auth-card{
+  max-width:420px;
+  margin:20px auto;
+  padding:20px;
+  background:#ffffff;
+  color:#0A2540;
+  border-radius:12px;
+  box-shadow:0px 0px 16px rgba(0,0,0,0.15);
+}
+
+/* ======================= DASHBOARD ======================= */
+.dashboard-top{
+  display:flex;
+  gap:20px;
+  align-items:flex-start;
+  flex-wrap:wrap;
+}
+
+.stats{
+  display:flex;
+  gap:12px;
+}
+
+/* ---------- CARDS DE ESTATÍSTICA (fundo claro) → TEXTO ESCURO ---------- */
+#view-dashboard .stats .card h3,
+#view-dashboard .stats .card p{
+  color: var(--text) !important;
+}
+
+/* ---------- CARROSSEL (fundo escuro) → TEXTO BRANCO ---------- */
+#view-dashboard .carousel,
+#view-dashboard .carousel h4,
+#view-dashboard .carousel p{
+  color:#ffffff !important;
+}
+
+.carousel{
+  background:rgba(255,255,255,0.08);
+  padding:12px;
+  border-radius:10px;
+  min-width:320px;
+  max-width:420px;
+}
+.carousel-slide{display:block;}
+
+/* ---------- FILA DE ESPERA (fundo escuro) → TEXTO BRANCO ---------- */
+.queue-panel{
+  margin-top:18px;
+  background:rgba(255,255,255,0.10);
+  padding:10px;
+  border-radius:8px;
+  color:#ffffff !important;
+}
+
+.queue-panel h3{
+  color:#ffffff !important;
+}
+
+.queue-panel table th,
+.queue-panel table td{
+  color:#ffffff !important;
+  border-color:rgba(255,255,255,0.25);
+}
+
+/* ======================= TABLES (fora do dashboard) ======================= */
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+th,td{
+  padding:8px;
+  text-align:left;
+  color:var(--text);
+  border-bottom:1px solid rgba(10,37,64,0.06);
+}
+th{opacity:0.9;}
+tr:nth-child(even){
+  background:rgba(0,0,0,0.02);
+}
+
+/* ======================= BUTTONS ======================= */
+.btn-action{
+  background:var(--accent);
+  border:0;
+  padding:8px 12px;
+  border-radius:8px;
+  color:#0A2540;
+  cursor:pointer;
+}
+.btn-secondary{
+  background:transparent;
+  border:1px solid rgba(10,37,64,0.06);
+  padding:6px 10px;
+  border-radius:8px;
+  color:var(--text);
+  cursor:pointer;
+  margin-left:8px;
+}
+
+label{
+  display:block;
+  margin:8px 0;
+  color:var(--muted);
+}
+
+/* ======================= INPUTS / SELECTS ======================= */
+input,
+select,
+textarea{
+  width:100%;
+  padding:8px;
+  border-radius:6px;
+  border:1px solid rgba(10,37,64,0.12);
+  background:#ffffff;
+  color:#000000;
+}
+
+select{appearance:auto;}
+
+input::placeholder,
+textarea::placeholder{
+  color:#666;
+}
+
+/* FOCUS IHC */
+input:focus,
+textarea:focus,
+select:focus{
+  outline:3px solid rgba(255,178,0,0.25);
+  border-color:var(--accent);
+}
+
+/* ======================= INTEGRANTES ======================= */
+.integrantes-grid{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+}
+.integrante{
+  text-align:center;
+}
+.integrante img{
+  border-radius:10px;
+  display:block;
+  margin:auto;
+}
+
+footer{
+  padding:10px;
+  text-align:center;
+  color:var(--card);
+  font-size:13px;
+}
+
+.hidden{display:none;}
+.row{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.muted{
+  color:#6b7280;
+  font-size:13px;
+  margin-top:8px;
+}
