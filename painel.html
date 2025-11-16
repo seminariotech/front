@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel do Paciente - Inova Med</title>
+
+<!-- IMPORTA O CSS PRINCIPAL -->
+<link rel="stylesheet" href="styles.css">
+
+<style>
+  /* --- CENTRALIZAÇÃO REAL E INDEPENDENTE DO SISTEMA --- */
+  html, body {
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+  }
+
+  body {
+    background: var(--bg);
+    display:flex !important;
+    justify-content:center !important;
+    align-items:center !important;
+  }
+
+  .painel-wrapper {
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+  }
+
+  .painel-card {
+    width:100%;
+    max-width:420px;
+    background: var(--card);
+    color: var(--text);
+    padding:24px;
+    border-radius:14px;
+    box-shadow:0 0 20px rgba(0,0,0,0.25);
+  }
+
+  h2 { margin-top:0; color: var(--text); }
+
+  label { color: var(--muted); font-weight:600; display:block; }
+
+  #cpfInput {
+    margin-top:5px;
+  }
+
+  .big-status { 
+    font-size:22px; 
+    font-weight:700; 
+    margin-top:10px; 
+  }
+
+  .status-aguardando { color:#d97706; }
+  .status-em { color:#16a34a; }
+  .status-concluido { color:#475569; }
+
+  .info {
+    margin-top:18px;
+    padding:14px;
+    border-radius:10px;
+    background:rgba(10,37,64,0.08);
+    color: var(--text);
+  }
+
+  .hidden {
+    display:none;
+  }
+</style>
+
+</head>
+<body>
+
+<div class="painel-wrapper">
+<div class="painel-card">
+
+  <h2>Painel do Paciente</h2>
+
+  <label>Digite seu CPF
+    <input id="cpfInput" placeholder="Somente números">
+  </label>
+
+  <button id="buscarBtn" class="btn-action" style="margin-top:12px;">Ver status</button>
+
+  <div id="resultado" class="hidden">
+    <h3 id="resNome"></h3>
+    <p id="resStatus" class="big-status"></p>
+
+    <div class="info">
+      <p><strong>Posição na fila:</strong> <span id="resPos">—</span></p>
+      <p><strong>Classificação de risco:</strong> <span id="resRisco">—</span></p>
+      <p><strong>Tempo de espera:</strong> <span id="resTempo">—</span></p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+/* ============================================================
+   PAINEL DO PACIENTE — JS ISOLADO E COMPATÍVEL COM SEU SISTEMA
+   ============================================================ */
+
+const store = {
+  get(k){ return JSON.parse(localStorage.getItem(k) || "[]"); }
+};
+
+/* ------------------------------
+   SE RECEBER ?cpf= AUTOMÁTICO
+   ------------------------------ */
+const params = new URLSearchParams(window.location.search);
+const cpfAuto = params.get("cpf");
+
+if (cpfAuto) {
+  const inp = document.querySelector("#cpfInput");
+  inp.value = cpfAuto;
+  setTimeout(() => {
+    document.querySelector("#buscarBtn").click();
+  }, 150);
+}
+
+/* ----------------------------------
+   BOTÃO BUSCAR
+   ---------------------------------- */
+document.querySelector("#buscarBtn").onclick = () => {
+  const cpf = document.querySelector("#cpfInput").value.trim();
+  if(!cpf){
+    alert("Digite o CPF");
+    return;
+  }
+
+  const pacientes = store.get("pacientes");
+  const atend = store.get("atendimentos");
+  const riscos = store.get("riscos");
+
+  const pac = pacientes.find(p => p.cpf === cpf);
+  if(!pac){
+    alert("Paciente não encontrado.");
+    return;
+  }
+
+  const at = atend.find(a => a.cpf === cpf || a.paciente === pac.nome);
+  if(!at){
+    alert("Nenhum atendimento encontrado.");
+    return;
+  }
+
+  // ordena fila por risco
+  const fila = atend
+    .filter(x => x.status !== "concluido")
+    .sort((a,b)=> a.risco - b.risco);
+
+  const pos = fila.findIndex(x => x.paciente === pac.nome) + 1;
+
+  const riscoObj = riscos.find(r => r.nivel == at.risco);
+  const tempo = Math.floor((Date.now() - new Date(at.data).getTime()) / 60000);
+
+  // mostra dados
+  document.querySelector("#resNome").textContent = pac.nome;
+
+  const statusEl = document.querySelector("#resStatus");
+
+  if(at.status === "em_atendimento"){
+    statusEl.textContent = "🟢 Em atendimento";
+    statusEl.className = "big-status status-em";
+  } 
+  else if(at.status === "aguardando"){
+    statusEl.textContent = "🟡 Aguardando";
+    statusEl.className = "big-status status-aguardando";
+  } 
+  else {
+    statusEl.textContent = "⚪ Concluído";
+    statusEl.className = "big-status status-concluido";
+  }
+
+  document.querySelector("#resPos").textContent = pos || "—";
+  document.querySelector("#resRisco").textContent =
+      riscoObj ? `${riscoObj.nivel} - ${riscoObj.descricao}` : "—";
+  document.querySelector("#resTempo").textContent = tempo + " min";
+
+  document.querySelector("#resultado").classList.remove("hidden");
+};
+</script>
+
+</body>
+</html>
